@@ -7,8 +7,12 @@ public class Player : MonoBehaviour
 {
     public Transform player;
     public SkeletonAnimation skeletonAnimation;
-    private float m_speed = 3f;
+    public GameObject target;
 
+    private float m_speed = 3f;
+    private float hp = 200;
+    private float MAX_HP = 200;
+    private int atk = 10;
     private string m_statu = "idle";
 
     // Start is called before the first frame update
@@ -16,6 +20,11 @@ public class Player : MonoBehaviour
     {
         skeletonAnimation.state.End += delegate
         {
+            if (m_statu == "attack")
+            {
+                target.GetComponent<Enemy>().Hit(atk);
+            }
+
             if (m_statu != "idle" && m_statu != "walk")
             {
                 m_statu = "idle";

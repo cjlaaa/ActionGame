@@ -10,20 +10,49 @@ public class Enemy : MonoBehaviour
 {
     public Transform enemy;
     public SkeletonAnimation skeletonAnimation;
-    private float m_speed = 1f;
     public Transform target;
+    public Transform uiHp;
 
+    private float m_speed = 1f;
     private string m_statu = "idle";
+    private float hp = 200;
+    private float MAX_HP = 200;
+    private int atk = 10;
 
     // Start is called before the first frame update
     void Start()
     {
+        skeletonAnimation.state.End += delegate
+        {
+            if (m_statu == "parried")
+            {
+                m_statu = "idle";
+            }
+            // if (m_statu != "idle" && m_statu != "walk")
+            // {
+            //     m_statu = "idle";
+            // }
+        };
         skeletonAnimation.state.SetAnimation(0, "idle", true);
+    }
+
+    public void Hit(int damage)
+    {
+        hp -= damage;
+        m_statu = "parried";
+        skeletonAnimation.state.SetAnimation(0, m_statu, false);
+
+        uiHp.SetLocalScaleX(hp / MAX_HP * 10);
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (m_statu == "parried")
+        {
+            return;
+        }
+
         float verticalMove = 0;
         float horizontalMove = 0;
         string curStatu = "idle";
@@ -51,9 +80,9 @@ public class Enemy : MonoBehaviour
             else verticalMove = 1;
         }
 
-        if (verticalMove == 0 && horizontalMove == 0 && m_statu == "walk")
+        if (verticalMove == 0 && horizontalMove == 0)
         {
-            curStatu = "idle";
+            curStatu = "attack";
         }
         else
         {
@@ -64,14 +93,7 @@ public class Enemy : MonoBehaviour
         if (m_statu != curStatu)
         {
             m_statu = curStatu;
-            if (m_statu == "attack")
-            {
-                skeletonAnimation.state.SetAnimation(0, m_statu, false);
-            }
-            else
-            {
-                skeletonAnimation.state.SetAnimation(0, m_statu, true);
-            }
+            skeletonAnimation.state.SetAnimation(0, m_statu, true);
         }
     }
 }

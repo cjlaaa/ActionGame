@@ -22,7 +22,7 @@ public class Enemy : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        skeletonAnimation.state.End += delegate
+        skeletonAnimation.state.Complete += delegate
         {
             if (m_statu == "parried")
             {
